@@ -1,0 +1,135 @@
+<div class="widget-box" ng-init="Init()">
+    <div class="widget-title"> <span class="icon"> <i class="icon-th"></i> </span>
+        <h5>Data Pembelian</h5> <span class="pull-right"><a href="#!TambahPembelian" data-toggle="modal"><i class="icon-plus"> Tambah</i></a></span>
+    </div>
+    <div class="widget-content nopadding">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="span1">No</th>
+                    <th>Tanggal</th>
+                    <th>Total Pembelian</th>
+                    <th>Supplier</th>
+                    <th class="span1"><i class="icon icon-cog"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="odd gradeX" ng-repeat="item in DatasPembelian">
+                    <td>{{$index+1}}</td>
+                    <td>{{item.TglBeli}}</td>
+                    <td>{{item.TotalBayar}}</td>
+                    <td>{{item.NamaSupplier}}</td>
+                    <td class="center"><a href="!#DetailPembelian" data-toggle="modal" title="Detail Pembelian" class="btn btn-success" ng-click="SelectedDetail(item.ItemBarang)"><i class="icon-list-ul"></i></a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div id="TambahPembelian" class="modal hide">
+    <form class="form-horizontal" ng-submit="InsertPembelian()">
+        <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <h3>Tambah Data Pembelian</h3>
+        </div>
+        <div class="modal-body">
+            <div id="form-wizard-1" class="step">
+                <div class="control-group">
+                    <label class="control-label">Username</label>
+                    <div class="controls">
+                        <input id="username" type="text" name="username" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Password</label>
+                    <div class="controls">
+                        <input id="password" type="password" name="password" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Confirm Password</label>
+                    <div class="controls">
+                        <input id="password2" type="password" name="password2" />
+                    </div>
+                </div>
+            </div>
+            <div id="form-wizard-2" class="step">
+                <div class="control-group">
+                    <label class="control-label">Email</label>
+                    <div class="controls">
+                        <input id="email" type="text" name="email" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">EULA</label>
+                    <div class="controls">
+                        <input id="eula" type="checkbox" name="eula" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <input id="back" class="btn btn-primary" type="reset" value="Back" />
+                <input id="next" class="btn btn-primary" type="submit" value="Next" />
+                <div id="status"></div>
+            </div>
+            <div id="submitted"></div>
+        </div>
+        <!--<div class="modal-footer"><input type="submit" value="Save" class="btn btn-success"> <a data-dismiss="modal" class="btn" href="#">Cancel</a> </div>-->
+    </form>
+</div>
+
+<div id="EditPenjualan" class="modal hide">
+    <form class="form-horizontal" ng-submit="UpdateKategori()">
+        <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <h3>Edit Kategori</h3>
+        </div>
+        <div class="modal-body">
+            <div class="control-group">
+                <label class="control-label">Nama Kategori</label>
+                <div class="controls">
+                    <input type="text" name="Kategori" id="Kategori" ng-model="SelectedItem.NamaKategori" required>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"><input type="submit" value="Update" class="btn btn-success"> <a data-dismiss="modal" class="btn" href="#">Cancel</a> </div>
+    </form>
+</div>
+
+<div id="DetailPembelian" class="modal hide">
+    <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button">×</button>
+        <h3>Detail Item Pembelian</h3>
+    </div>
+    <div class="modal-body">
+        <div class="widget-box" ng-init="Init()">
+            <div class="widget-title"> <span class="icon"> <i class="icon-eye-open"></i> </span>
+                <h5>Barang Item</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Barang</th>
+                            <th>Kode Barang</th>
+                            <th>Jumlah</th>
+                            <th>Harga Beli</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="odd gradeX" ng-repeat="item in ViewDetailBarang">
+                            <td>{{$index+1}}</td>
+                            <td>{{item.NamaBarang}}</td>
+                            <td>{{item.KodeBarang}}</td>
+                            <td>{{item.Jumlah}}</td>
+                            <td>{{item.HargaBeli}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><a data-dismiss="modal" class="btn" href="#">Cancel</a> </div>
+</div>

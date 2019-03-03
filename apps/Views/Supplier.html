@@ -1,0 +1,88 @@
+<div class="widget-box" ng-init="Init()">
+    <div class="widget-title"> <span class="icon"> <i class="icon-th"></i> </span>
+        <h5>Data Supplier</h5> <span class="pull-right"><a href="!#TambahSupplier" data-toggle="modal"><i class="icon-plus"> Tambah</i></a></span>
+    </div>
+    <div class="widget-content nopadding">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Supplier</th>
+                    <th>Telp</th>
+                    <th>Alamat</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="odd gradeX" ng-repeat="item in DatasSupplier">
+                    <td>{{$index+1}}</td>
+                    <td>{{item.NamaSupplier}}</td>
+                    <td>{{item.Telp}}</td>
+                    <td>{{item.Alamat}}</td>
+                    <td class="center"><a href="!#EditSupplier" data-toggle="modal" class="btn btn-success" ng-click="Selected(item)"><i class="icon-edit"></i></a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div id="TambahSupplier" class="modal hide">
+    <form class="form-horizontal" ng-submit="InsertSupplier()">
+        <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <h3>Tambah Data Supplier</h3>
+        </div>
+        <div class="modal-body">
+            <div class="control-group">
+                <label class="control-label">Nama Supplier</label>
+                <div class="controls">
+                    <input type="text" ng-model="InputSupplier.NamaSupplier" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Telp</label>
+                <div class="controls">
+                    <input type="text" ng-model="InputSupplier.Telp" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Alamat</label>
+                <div class="controls">
+                    <textarea ng-model="InputSupplier.Alamat"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"><input type="submit" value="Save" class="btn btn-success"> <a data-dismiss="modal" class="btn" href="#">Cancel</a> </div>
+    </form>
+</div>
+
+<div id="EditSupplier" class="modal hide">
+    <form class="form-horizontal" ng-submit="UpdateSupplier()">
+        <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <h3>Edit Supplier</h3>
+        </div>
+        <div class="modal-body">
+            <div class="control-group">
+                <label class="control-label">Nama Supplier</label>
+                <div class="controls">
+                    <input type="text" ng-model="SelectedItem.NamaSupplier" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Telp</label>
+                <div class="controls">
+                    <input type="text" ng-model="SelectedItem.Telp" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Alamat</label>
+                <div class="controls">
+                    <textarea ng-model="SelectedItem.Alamat"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"><input type="submit" value="Update" class="btn btn-success"> <a data-dismiss="modal" class="btn" href="#">Cancel</a> </div>
+    </form>
+</div>

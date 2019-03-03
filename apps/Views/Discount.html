@@ -1,0 +1,109 @@
+<div class="widget-box" ng-init="Init()">
+    <div class="widget-title"> <span class="icon"> <i class="icon-th"></i> </span>
+        <h5>Data Discount</h5> <span class="pull-right"><a href="!#TambahDiscount" data-toggle="modal"><i class="icon-plus"> Tambah</i></a></span>
+    </div>
+    <div class="widget-content nopadding">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="span1">No</th>
+                    <th class="span3">Nama Barang</th>
+                    <th class="span2">Discount</th>
+                    <th class="span2">Masa Berlaku</th>
+                    <th class="span2">Keterangan</th>
+                    <th class="span1"><i class="icon icon-cog"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="odd gradeX" ng-repeat="item in DatasDiscount">
+                    <td>{{$index+1}}</td>
+                    <td>{{item.NamaBarang}}</td>
+                    <td>{{item.Discount}}&nbsp;%</td>
+                    <td>{{item.MasaBerlaku}}</td>
+                    <td>{{item.Keterangan}}</td>
+                    <td class="center"><a href="!#EditDiscount" data-toggle="modal" class="btn btn-success" ng-click="Selected(item)"><i class="icon-edit"></i></a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div id="TambahDiscount" class="modal hide">
+    <form class="form-horizontal" ng-submit="InsertDiscount()">
+        <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <h3>Tambah Data Discount</h3>
+        </div>
+        <div class="modal-body">
+            <div class="control-group">
+                <label class="control-label">Barang</label>
+                <div class="controls">
+                    <select class="form-control" ng-options="item as item.NamaBarang for item in DatasBarang track by item.IdBarang" ng-model="SelectedItemBarang"></select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Masa Berlaku</label>
+                <div class="controls">
+                    <input type="date" ng-model="InputDiscount.MasaBerlaku" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Discount</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="text" ng-model="InputDiscount.Discount" placeholder="Masukkan Discount" required>
+                        <span class="add-on">$</span>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Keterangan Discount</label>
+                <div class="controls">
+                    <textarea ng-model="InputDiscount.Keterangan"></textarea>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer"><input type="submit" value="Save" class="btn btn-success"> <a data-dismiss="modal" class="btn" href="#">Cancel</a> </div>
+    </form>
+</div>
+
+<div id="EditDiscount" class="modal hide">
+    <form class="form-horizontal" ng-submit="UpdateDiscount()">
+        <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <h3>Edit Kategori</h3>
+        </div>
+        <div class="modal-body">
+            <div class="control-group">
+                <label class="control-label">Barang</label>
+                <div class="controls">
+                    <select class="form-control" ng-options="item as item.NamaBarang for item in DatasBarang track by item.IdBarang" ng-model="SelectedItemBarang"></select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Masa Berlaku</label>
+                <div class="controls">
+                    <input type="date" ng-model="DataUpdatePrice.MasaBerlaku" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Discount</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="text" ng-model="DataUpdatePrice.Discount" placeholder="Masukkan Discount" required>
+                        <span class="add-on">$</span>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Keterangan Discount</label>
+                <div class="controls">
+                    <textarea ng-model="DataUpdatePrice.Keterangan"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"><input type="submit" value="Update" class="btn btn-success"> <a data-dismiss="modal" class="btn" href="#">Cancel</a> </div>
+    </form>
+</div>

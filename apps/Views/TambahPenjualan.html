@@ -1,0 +1,100 @@
+<div ng-init="Init()">
+    <div class="widget-box">
+        <div class="widget-title"> <span class="icon"> <i class="icon-info-sign"></i> </span>
+            <h5>Tambah Pembelian</h5>
+            <div id="search">
+                <div class="input-prepend"> <span class="add-on">No. Nota</span>
+                    <input type="text" ng-model="InputPenjualan.Nota" disabled/>
+                </div>
+            </div>
+        </div>
+        <div class="widget-content nopadding">
+            <div class="form-actions">
+                <div class="input-prepend"> <span class="add-on">Rp.</span>
+                    <input type="text" ng-model="InputPenjualan.TotalBayar" disabled>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button ng-click="InsertPenjualan()" class=" btn btn-success">Save</button>
+                <a href="!#TambahItem" class="btn btn-primary" data-toggle="modal" ng-click="SetBarang()">Item Barang</a>
+            </div>
+        </div>
+    </div>
+    <div class="widget-box">
+        <div class="widget-title"> <span class="icon"> <i class="icon-th"></i> </span>
+            <h5>Item Barang</h5>
+        </div>
+        <div class="widget-content nopadding">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Barang</th>
+                        <th>Kode Barang</th>
+                        <th>Jumlah Beli</th>
+                        <th>Harga Satuan</th>
+                        <th>Stock</th>
+                        <th><i class="icon icon-cog"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="odd gradeX" ng-repeat="item in InputPenjualan.ItemBarang">
+                        <td>{{$index+1}}</td>
+                        <td>{{item.NamaBarang}}</td>
+                        <td>{{item.KodeBarang}}</td>
+                        <td>{{item.Price}}</td>
+                        <td>{{item.Stock}}</td>
+                        <td class="center"><a href="javascript:void(0);" data-toggle="modal" class="btn btn-success" ng-click="DeleteItem(item)"><i class="icon-minus-sign"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="TambahItem" class="modal hide">
+    <form class="form-horizontal" ng-submit="TambahItemBarang()">
+        <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <h3>Form Item Barang</h3>
+        </div>
+        <div class="modal-body">
+            <div class="widget-box">
+                <div class="widget-title"> <span class="icon"> <i class="icon-th"></i> </span>
+                    <div class="input-prepend"> <span class="add-on">Jumlah</span>
+                        <input type="text" ng-model="Jumlah.jumlah" class="span1 m-wrap" />
+                    </div>
+                    <div id="search">
+
+                        <div class="input-prepend"> <span class="add-on">Cari</span>
+                            <input type="text" ng-model="Cari" class="span1 m-wrap" />
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Barang</th>
+                                <th>Kode Barang</th>
+                                <th>Harga Satuan</th>
+                                <th><i class="icon icon-cog"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="odd gradeX" ng-repeat="item in DatasBarang | filter:Cari">
+                                <td>{{$index+1}}</td>
+                                <td>{{item.NamaBarang}}</td>
+                                <td>{{item.KodeBarang}}</td>
+                                <td>{{item.Price}}</td>
+                                <td class="center"><a href="javascript:void(0);" class="btn btn-success" ng-click="AddItem(item)" data-dismiss="modal"><i class="icon-ok"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--<div class="modal-footer"><input type="submit" value="Tambah" class="btn btn-success"> <a data-dismiss="modal" class="btn" href="#">Tutup</a> </div>-->
+    </form>
+</div>
