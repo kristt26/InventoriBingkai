@@ -5,14 +5,14 @@ header("Content-Type: application/json; charset=UTF-8");
  
 // include database and object files
 include_once '../../api/config/database.php';
-include_once '../../api/objects/Karyawan.php';
+include_once '../../api/objects/Login.php';
  
 // instantiate database and product object
 $database = new Database();
 $db = $database->getConnection();
  
 // initialize object
-$login = new Karyawan($db);
+$login = new Login($db);
  
 // query products
 $stmt = $login->log();

@@ -3,14 +3,17 @@ class Login{
  
     // database connection and table name
     private $conn;
-    private $table_name = "karyawan";
+    private $table_name = "pegawai";
  
     // object properties
-    public $IdKaryawan;
+    public $Nip;
     public $Nama;
     public $Alamat;
     public $Kontak;
     public $Sex;
+    public $IdBidang;
+    public $NamaBidang;
+    public $Jabatan;
     public $Email;
     public $Password;
  
@@ -23,7 +26,7 @@ class Login{
     function CheckSession()
     {
         session_start();
-        if(!isset($_SESSION['Email']))
+        if(!isset($_SESSION['Nip']))
         {
             return false;
         }else{

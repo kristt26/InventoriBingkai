@@ -6,69 +6,59 @@ app.config(function($routeProvider) {  
             controller: "MainController"
         })
 
-    .when("/Kategori", {
-        templateUrl: "apps/Views/Kategori.html",
-        controller: "KategoriController"
+    .when("/Pegawai", {
+        templateUrl: "apps/Views/pegawai.html",
+        controller: "pegawaiController"
     })
 
-    .when("/Barang", {
-        templateUrl: "apps/Views/Barang.html",
-        controller: "BarangController"
+    .when("/Bidang", {
+        templateUrl: "apps/Views/Bidang.html",
+        controller: "BidangController"
     })
 
-    .when("/Log", {
-        templateUrl: "apps/Views/Logout.html",
+    .when("/Logout", {
+        templateUrl: "apps/Views/Bidang.html",
         controller: "LogoutController"
     })
 
-    .when("/Return", {
-        templateUrl: "apps/Views/Return.html",
-        controller: "ReturnController"
+    .when("/login", {
+        templateUrl: "apps/Views/login.html",
+        controller: "LoginController"
     })
 
-    .when("/Karyawan", {
-        templateUrl: "apps/Views/Karyawan.html",
-        controller: "KaryawanController"
+    .when("/login", {
+        templateUrl: "apps/Views/login.html",
+        controller: "LoginController"
     })
 
-    .when("/Pembelian", {
-        templateUrl: "apps/Views/Pembelian.html",
-        controller: "PembelianController"
+    .when("/DaftarAbsen", {
+        templateUrl: "apps/Views/daftarabsen.html",
+        controller: "DaftarAbsenController"
     })
 
-    .when("/TambahPembelian", {
-        templateUrl: "apps/Views/TambahPembelian.html",
-        controller: "PembelianController"
+    .when("/ViewAbsen", {
+        templateUrl: "apps/Views/ViewAbsen.html",
+        controller: "ViewAbsenController"
     })
 
-    .when("/Price", {
-        templateUrl: "apps/Views/Price.html",
-        controller: "PriceController"
+    .when("/HariLibur", {
+        templateUrl: "apps/Views/HariLibur.html",
+        controller: "HariLiburController"
     })
 
-    .when("/Discount", {
-        templateUrl: "apps/Views/Discount.html",
-        controller: "DiscountController"
+    .when("/Perangkat", {
+        templateUrl: "apps/Views/Perangkat.html",
+        controller: "PerangkatController"
     })
 
-    .when("/Supplier", {
-        templateUrl: "apps/Views/Supplier.html",
-        controller: "SupplierController"
+    .when("/StatusAbsen", {
+        templateUrl: "apps/Views/StatusAbsen.html",
+        controller: "StatusAbsenController"
     })
 
-    .when("/Penjualan", {
-        templateUrl: "apps/Views/Penjualan.html",
-        controller: "PenjualanController"
-    })
-
-    .when("/TambahPenjualan", {
-        templateUrl: "apps/Views/TambahPenjualan.html",
-        controller: "PenjualanController"
-    })
-
-    .when("/LStock", {
-        templateUrl: "apps/Laporan/LaporanStock.html",
-        controller: "LaporanController"
+    .when("/Collies", {
+        templateUrl: "apps/Views/Collies.html",
+        controller: "ColliesController"
     })
 
     .otherwise({ redirectTo: '/Main' })
@@ -86,7 +76,7 @@ app.config(function($routeProvider) {  
         })
         .then(function(response) {
             if (response.data.Session == false) {
-                window.location.href = 'index.html';
+                window.location.href = 'login.html';
             } else
                 $rootScope.Session = response.data.Session;
         }, function(error) {

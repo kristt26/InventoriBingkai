@@ -1,7 +1,7 @@
 angular.module("Ctrl", [])
 
 .controller("MainController", function($scope, $http, SessionService) {
-    /*$scope.Init = function() {
+    $scope.Init = function() {
         //Auth
         var Urlauth = "api/datas/auth.php";
         $http({
@@ -17,193 +17,271 @@ angular.module("Ctrl", [])
                 alert(error.message);
             })
     }
-    */
-})
-
-.controller("KategoriController", function($scope, $http, SessionService) {
-    $scope.DataKategoris = [];
-    $scope.DataInput = {};
-    $scope.SelectedItem = {};
-    $scope.Init = function() {
-        //Data Kategori
-        var UrlKategori = "api/datas/Select/kategori.php";
-        $http({
-                method: "get",
-                url: UrlKategori,
-            })
-            .then(function(response) {
-                $scope.DataKategoris = response.data.records;
-            }, function(error) {
-                alert(error.message);
-            })
-    }
-
-    $scope.InsertKategori = function() {
-        var urlinsertkategori = "api/datas/Create/readKategori.php";
-        var Data = $scope.DataInput;
-        $http({
-                method: "post",
-                url: urlinsertkategori,
-                data: Data
-            })
-            .then(function(response) {
-                if (response.data.message != 0) {
-                    Data.IdKategori = response.data.message;
-                    $scope.DataKategoris.push(angular.copy(Data));
-                } else
-                    alert("Unable to Create Kategori");
-            }, function(error) {
-                alert(error.Massage);
-            })
-    }
-
-    $scope.Selected = function(item) {
-        $scope.SelectedItem = item;
-    }
-
-    $scope.UpdateKategori = function() {
-        var urlupdatekategori = "api/datas/Update/updateKategori.php";
-        var Data = $scope.SelectedItem;
-        $http({
-                method: "post",
-                url: urlupdatekategori,
-                data: Data
-            })
-            .then(function(response) {
-                if (response.data.message == "Bidang was updated") {
-                    angular.forEach($scope.DataKategoris, function(value, key) {
-                        if (value.IdKategori == Data.IdKategori) {
-                            value.NamaKategori = Data.NamaKategori;
-                        }
-                    });
-                    alert(response.data.message);
-                } else
-                    alert("Unable to Create Kategori");
-            }, function(error) {
-                alert(error.Massage);
-            })
-    }
 })
 
 
 .controller("LogoutController", function($scope, $http) {
+    var Urlauth = "api/datas/logout.php";
+    $http({
+            method: "get",
+            url: Urlauth,
+        })
+        .then(function(response) {
+            if (response.data.message == true) {
+                window.location.href = 'login.html';
+            }
+        }, function(error) {
+            alert(error.message);
+        })
+})
+
+.controller("pegawaiController", function($scope, $http, $rootScope, SessionService) {
+    //$rootScope.Session = {};
+    $scope.DatasPegawai = [];
+    $scope.DataInputPegawai = {};
+    $scope.DatasBidang = [];
+    $scope.SelectedItemBidang = {};
+    $scope.SelectedItemPegawai = {};
+    $scope.SelectedItemJabatan = {};
+    $scope.Jabatan = [{ 'jab': 'Kepala Bagian' }, { 'jab': 'Kasubbid Keberatan dan Pengurangan' }, { 'jab': 'Kasubbid Perhitungan dan Penetapan' }, { 'jab': 'Kasubbid Penagihan' }, { 'jab': 'Kabid Penagihan' }, { 'jab': 'Staf' }]
+    $scope.Pangkat = [
+        { 'gol': 'I/a' },
+        { 'gol': 'I/b' },
+        { 'gol': 'I/c' },
+        { 'gol': 'I/d' },
+        { 'gol': 'II/a' },
+        { 'gol': 'II/b' },
+        { 'gol': 'II/c' },
+        { 'gol': 'II/d' },
+        { 'gol': 'III/a' },
+        { 'gol': 'III/b' },
+        { 'gol': 'III/c' },
+        { 'gol': 'III/d' },
+        { 'gol': 'IV/a' },
+        { 'gol': 'IV/b' },
+        { 'gol': 'IV/c' },
+        { 'gol': 'IV/d' },
+        { 'gol': 'IV/e' }
+    ];
+    $scope.SelectedPangkat = {};
     $scope.Init = function() {
-        var Urlauth = "api/datas/logout.php";
+        //Auth
+        var Urlauth = "api/datas/auth.php";
         $http({
                 method: "get",
                 url: Urlauth,
             })
             .then(function(response) {
-                if (response.data.message == true) {
-                    window.location.href = 'index.html';
-                }
+                if (response.data.Session == false) {
+                    window.location.href = 'login.html';
+                } else
+                    $rootScope.Session = response.data.Session;
+            }, function(error) {
+                alert(error.message);
+            })
+
+
+        //Get Bidang
+        var UrlBidang = "api/datas/readBidang.php";
+        $http({
+                method: "get",
+                url: UrlBidang
+            })
+            .then(function(response) {
+                $scope.DatasBidang = response.data.records;
+            }, function(error) {
+                alert(error.message);
+            })
+
+
+        //Get Data Pegawai
+        var UrlPegawai = "api/datas/readPegawai.php";
+        $http({
+                method: "get",
+                url: UrlPegawai
+            })
+            .then(function(response) {
+                $scope.DatasPegawai = response.data.records;
+            }, function(error) {
+                alert(error.message);
+            })
+
+    }
+
+    //Proses Insert Data Pegawai
+    $scope.InsertPegawai = function() {
+        $scope.DataInputPegawai.IdBidang = $scope.SelectedItemBidang.IdBidang;
+        $scope.DataInputPegawai.NamaBidang = $scope.SelectedItemBidang.NamaBidang;
+        $scope.DataInputPegawai.Pangkat = $scope.SelectedPangkat.gol;
+        $scope.DataInputPegawai.Jabatan = $scope.SelectedItemJabatan.jab;
+        var Data = $scope.DataInputPegawai;
+        var InsertDataPegawai = "api/datas/createPegawai.php";
+
+        $http({
+                method: "post",
+                url: InsertDataPegawai,
+                data: Data
+            })
+            .then(function(response) {
+                if (response.data.message == "Product was created") {
+                    $scope.DatasPegawai.push(angular.copy(Data));
+                } else
+                    alert("Data Gagal disimpan");
+            }, function(error) {
+                alert(error.message);
+            })
+        $scope.DataInputPegawai = {};
+    }
+
+    //Selected Item City
+    $scope.Selected = function(item) {
+        angular.forEach($scope.DatasBidang, function(value, key) {
+            if (value.IdBidang == item.IdBidang) {
+                $scope.SelectedItemBidang = value;
+            }
+        });
+        $scope.SelectedItemPegawai = item;
+        $scope.SelectedPangkat.gol = $scope.SelectedItemPegawai.Pangkat;
+    }
+
+    //Update Data City
+    $scope.UpdateDataPegawai = function() {
+        $scope.SelectedItemPegawai.IdBidang = $scope.SelectedItemBidang.IdBidang;
+        $scope.SelectedItemPegawai.NamaBidang = $scope.SelectedItemBidang.NamaBidang;
+        $scope.SelectedItemPegawai.Pangkat = $scope.SelectedPangkat.gol;
+        var Data = $scope.SelectedItemPegawai;
+        var UrlUpdatePegawai = "api/datas/updatePegawai.php";
+        $http({
+                method: "post",
+                url: UrlUpdatePegawai,
+                data: Data
+            })
+            .then(function(response) {
+                if (response.data.message == "Product was updated") {
+                    angular.forEach($scope.DatasPegawai, function(value, key) {
+                        if (value.Nip == Data.Nip) {
+                            value.Nama = Data.Nama;
+                            value.Alamat = Data.Alamat;
+                            value.Kontak = Data.Kontak;
+                            value.Sex = Data.Sex;
+                            value.IdBidang = Data.IdBidang;
+                            value.NamaBidang = Data.NamaBidang;
+                            value.Jabatan = Data.Jabatan;
+                            value.Email = Data.Email;
+                        }
+                    })
+                } else
+                    alert(response.data.message);
             }, function(error) {
                 alert(error.message);
             })
     }
 
+    //Delete Pegawai
+    $scope.Delete = function(item) {
+        $scope.SelectedItemPegawai = item;
+        var Data = $scope.SelectedItemPegawai;
+        var UrlDeletePegawai = "api/datas/deletePegawai.php";
+        $http({
+                method: "post",
+                url: UrlDeletePegawai,
+                data: Data
+            })
+            .then(function(response) {
+                if (response.data.message == "Product was deleted") {
+                    $scope.DatasPegawai.splice(Data, 1);
+                    alert(response.data.message);
+                } else
+                    alert("Data Tidak Terhapus");
+            }, function(error) {
+                alert(error.message);
+            })
+    }
+
+
 })
 
-
-.controller("BarangController", function($scope, $http, SessionService) {
-    $scope.DatasBarang = [];
+.controller("BidangController", function($scope, $http, $rootScope, SessionService) {
+    $scope.DatasBidang = [];
     //$rootScope.Session = {};
-    $scope.DataInputBarang = {};
-    $scope.SelectedItem = {};
-    $scope.InputBarang = {};
-    $scope.DataKategoris = [];
-    $scope.DataUpdateBarang = {};
-    $scope.SelectedItemKategori = {};
+    $scope.DataInputBidang = {};
+    $scope.DataSelected = {};
+    $scope.InputUser = {};
 
     $scope.Init = function() {
         //Auth
-        var UrlKategori = "api/datas/Select/kategori.php";
+        var Urlauth = "api/datas/auth.php";
         $http({
                 method: "get",
-                url: UrlKategori,
+                url: Urlauth,
             })
             .then(function(response) {
-                $scope.DataKategoris = response.data.records;
-                var UrlBarang = "api/datas/Select/readBarang.php";
-                $http({
-                        method: "get",
-                        url: UrlBarang
-                    })
-                    .then(function(response) {
-                        $scope.DatasBarang = response.data.records;
-                        angular.forEach($scope.DataKategoris, function(valuekategori, keykategori) {
-                            angular.forEach($scope.DatasBarang, function(valueBarang, keyBarang) {
-                                if (valueBarang.KategoriId == valuekategori.IdKategori) {
-                                    valueBarang.NamaKategori = valuekategori.NamaKategori;
-                                }
-                            })
-                        })
+                if (response.data.Session == false) {
+                    window.location.href = 'login.html';
+                } else
+                    $rootScope.Session = response.data.Session;
+            }, function(error) {
+                alert(error.message);
+            })
 
-                    }, function(error) {
 
-                        alert(error.message);
-                    })
+
+        var UrlBidang = "api/datas/readBidang.php";
+        $http({
+                method: "get",
+                url: UrlBidang
+            })
+            .then(function(response) {
+                $scope.DatasBidang = response.data.records;
             }, function(error) {
                 alert(error.message);
             })
     }
 
     //Insert Data Bidang
-    $scope.InsertBarang = function() {
-        $scope.InputBarang.KategoriId = $scope.SelectedItemKategori.IdKategori;
-        $scope.InputBarang.NamaKategori = $scope.SelectedItemKategori.NamaKategori;
-        var urlinsertbarang = "api/datas/Create/createBarang.php";
-        var Data = $scope.InputBarang;
+    $scope.InsertBidang = function() {
+        var Data = $scope.DataInputBidang;
+        var UrlInsertBidang = "api/datas/createBidang.php";
         $http({
                 method: "post",
-                url: urlinsertbarang,
+                url: UrlInsertBidang,
                 data: Data
             })
             .then(function(response) {
-                if (response.data.message != 0) {
-                    Data.IdBarang = response.data.message;
-                    Data.Stock = 0;
-                    $scope.DatasBarang.push(angular.copy(Data));
-                    alert("Barang Was Created");
-                    window.location.reload();
+                if (response.data.message != "0") {
+                    Data.Id = response.data;
+                    $scope.DatasPegawai.push(angular.copy(Data));
                 } else
-                    alert("Unable to Create Barang");
+                    alert("Data Gagal disimpan");
             }, function(error) {
-                alert(error.Massage);
+                alert(error.message);
             })
-        $scope.SelectedItemKategori = {};
-        $scope.InputBarang = {};
 
     }
 
+
     $scope.Selected = function(item) {
-        $scope.DataUpdateBarang = item;
-        angular.forEach($scope.DataKategoris, function(value, key) {
-            if (value.IdKategori == item.KategoriId) {
-                $scope.SelectedItemKategori = value;
-            }
-        })
+        $scope.DataSelected = item;
     }
 
     //Funsi Update Bidang
-    $scope.UpdateBarang = function() {
-        var Data = $scope.DataUpdateBarang;
-        var UrlUpdateBidang = "api/datas/Update/updateBarang.php";
+    $scope.UpdateDataBidang = function() {
+        var Data = $scope.DataSelected;
+        var UrlUpdateBidang = "api/datas/updateBidang.php";
         $http({
                 method: "post",
                 url: UrlUpdateBidang,
                 data: Data
             })
             .then(function(response) {
-                if (response.data.message == "Barang Was Update") {
-                    angular.forEach($scope.DatasBarang, function(value, key) {
-                        if (value.IdBarang == Data.IdBarang) {
-                            value.NamaBarang = Data.NamaBarang;
-                            value.Keterangan = Data.Keterangan;
+                if (response.data.message == "Bidang was updated") {
+                    angular.forEach($scope.DatasBidang, function(value, key) {
+                        if (value.IdBidang == Data.IdBidang) {
+                            value.NamaBidang = Data.NamaBidang;
+                            value.KepalaBagian = Data.KepalaBagian;
+                            alert(response.data.message);
                         }
                     })
-                    alert(response.data.message);
-                    window.location.reload();
                 } else
                     alert(response.data.message);
             }, function(error) {
@@ -213,646 +291,501 @@ angular.module("Ctrl", [])
 
 })
 
-.controller("SupplierController", function($scope, $http, $rootScope, SessionService) {
-    $scope.DatasSupplier = [];
-    $scope.InputSupplier = {};
-    $scope.SelectedItem = {};
+.controller("PerangkatController", function($scope, $http, $rootScope, SessionService) {
+    $scope.DatasPerangkat = [];
+    $rootScope.Session = {};
+    $scope.DatasPegawai = [];
+    $scope.DataInputPerangkat = {};
+    $scope.SelectedItemPegawai = {};
+    $scope.DataSelected = {};
+
     $scope.Init = function() {
         //Auth
-        var UrlSupplier = "api/datas/Select/readSupplier.php";
+        var Urlauth = "api/datas/auth.php";
         $http({
                 method: "get",
-                url: UrlSupplier,
+                url: Urlauth,
             })
             .then(function(response) {
-                $scope.DatasSupplier = response.data.records;
+                if (response.data.Session == false) {
+                    window.location.href = 'login.html';
+                } else
+                    $rootScope.Session = response.data.Session;
+            }, function(error) {
+                alert(error.message);
+            })
+
+        var UrlPerangkat = "api/datas/readPerangkat.php";
+        $http({
+                method: "get",
+                url: UrlPerangkat
+            })
+            .then(function(response) {
+                $scope.DatasPerangkat = response.data.records;
+            }, function(error) {
+                alert(error.message);
+            })
+
+        //Get Data Pegawai
+        var UrlPegawai = "api/datas/readPegawai.php";
+        $http({
+                method: "get",
+                url: UrlPegawai
+            })
+            .then(function(response) {
+                $scope.DatasPegawai = response.data.records;
             }, function(error) {
                 alert(error.message);
             })
     }
 
-    $scope.InsertSupplier = function() {
-        var UrlInsertSupplier = "api/datas/Create/createSupplier.php";
-        var Data = $scope.InputSupplier;
+
+    //Insert Data Perangkat
+    $scope.InsertPerangkat = function() {
+        $scope.DataInputPerangkat.Nip = $scope.SelectedItemPegawai.Nip;
+        $scope.DataInputPerangkat.Nama = $scope.SelectedItemPegawai.Nama;
+        var Data = $scope.DataInputPerangkat;
+        var UrlInsertPerangkat = "api/datas/createPerangkat.php";
         $http({
                 method: "post",
-                url: UrlInsertSupplier,
+                url: UrlInsertPerangkat,
                 data: Data
             })
             .then(function(response) {
-                if (response.data.message != "Unable to create Supplier") {
-                    Data.IdSupplier = response.data.message;
-                    $scope.DatasSupplier.push(angular.copy(Data));
-                    alert("Supplier Was Created");
-                    window.location.reload();
+                if (response.data.message == "Data Tersimpan") {
+                    Data.IdPerangkat = response.data.IdPerangkat;
+                    $scope.DatasPerangkat.push(angular.copy(Data));
+                    alert(response.data.message);
+                    $scope.DataInputPerangkat = {};
+                    $scope.SelectedItemPegawai = {};
+                } else
+                    alert("Data Gagal disimpan");
+            }, function(error) {
+                alert(error.message);
+            })
+    }
+
+
+    $scope.Selected = function(item) {
+        $scope.DataSelected = item;
+    }
+
+    //Funsi Update Bidang
+    $scope.UpdateDataPerangkat = function() {
+        var Data = $scope.DataSelected;
+        var UrlUpdatePerangkat = "api/datas/updatePerangkat.php";
+        $http({
+                method: "post",
+                url: UrlUpdatePerangkat,
+                data: Data
+            })
+            .then(function(response) {
+                if (response.data.message == "Perangkat was updated") {
+                    angular.forEach($scope.DatasPerangkat, function(value, key) {
+                        if (value.IdPerangkat == Data.IdPerangkat) {
+                            value.MacAddress = Data.MacAddress;
+                            alert(response.data.message);
+                        }
+                    })
                 } else
                     alert(response.data.message);
             }, function(error) {
-                alert(error.Massage);
+                alert(error.message);
+            })
+    }
+
+    //Delete Perangkat
+    $scope.Delete = function(item) {
+        $scope.DataSelected = item;
+        var Data = $scope.DataSelected;
+        var UrlDeletePerangkat = "api/datas/deletePerangkat.php";
+        $http({
+                method: "post",
+                url: UrlDeletePerangkat,
+                data: Data
+            })
+            .then(function(response) {
+                if (response.data.message == "Perangkat Berhasil Di Hapus") {
+                    $scope.DatasPerangkat.splice(Data, 1);
+                    alert(response.data.message);
+                } else
+                    alert("Data Tidak Terhapus");
+            }, function(error) {
+                alert(error.message);
+            })
+    }
+
+})
+
+
+.controller("DaftarAbsenController", function($scope, $http, $rootScope, SessionService) {
+    $scope.DataTanggal = {};
+    $scope.DatasAbsenPegawai = [];
+    //$rootScope.Session = {};
+    $scope.Init = function() {
+        //Auth
+        var Urlauth = "api/datas/auth.php";
+        $http({
+                method: "get",
+                url: Urlauth,
+            })
+            .then(function(response) {
+                if (response.data.Session == false) {
+                    window.location.href = 'login.html';
+                } else
+                    $rootScope.Session = response.data.Session;
+            }, function(error) {
+                alert(error.message);
+            })
+
+        var UrlPrices = "api/Prices.php?action=GetPrices";
+        $http({
+                method: "get",
+                url: UrlPrices
+            })
+            .then(function(response) {
+                $scope.DataPrices = response.data;
+            }, function(error) {
+                alert(err.Massage);
+            })
+    }
+
+    $scope.Cari = function() {
+        var Data = $scope.DataTanggal;
+        var UrlAbsen = "api/datas/readAbsenPegawai.php";
+        $http({
+                method: "post",
+                url: UrlAbsen,
+                data: Data
+            })
+            .then(function(response) {
+                $scope.DatasAbsenPegawai = response.data.records[0];
+            }, function(error) {
+                alert(error.message);
+            })
+
+    }
+})
+
+.controller("ViewAbsenController", function($scope, $http, $rootScope, SessionService) {
+    //$rootScope.Session = {};
+    $scope.DatasAbsen = [];
+    $scope.DataTanggal = {};
+    $scope.DataPegawai = {};
+
+    $scope.Init = function() {
+        //Auth
+        var Urlauth = "api/datas/auth.php";
+        $http({
+                method: "get",
+                url: Urlauth,
+            })
+            .then(function(response) {
+                if (response.data.Session == false) {
+                    window.location.href = 'login.html';
+                } else
+                    $rootScope.Session = response.data.Session;
+            }, function(error) {
+                alert(error.message);
+            })
+
+    }
+    $scope.Cari = function() {
+        var Data = $scope.DataTanggal;
+        var UrlAbsen = "api/datas/readAbsen.php";
+        $http({
+                method: "post",
+                url: UrlAbsen,
+                data: Data
+            })
+            .then(function(response) {
+                $scope.DatasAbsen = response.data;
+            }, function(error) {
+                alert(error.message);
+            })
+    }
+
+    $scope.Cetak = function() {
+        var Data = $scope.DataTanggal;
+        var date = $scope.DataTanggal;
+
+        //Convert Dtate  Tostring
+        startDate = date.Year + " " + date.Month + " " + date.Day;
+
+
+
+        //$scope.DataTanggal.DTanggal = $filter('date')($scope.DataTanggal.DariTanggal, "yyyy-MM-dd");
+        var UrlAbsen = "api/datas/dataTanggal.php";
+        $http({
+                method: "post",
+                url: UrlAbsen,
+                data: Data
+            })
+            .then(function(response) {
+                if (response.data.message == true)
+                    window.open('apps/laporan/LaporanAbsen.html', '_blank')
+            }, function(error) {
+                alert(error.message);
+            })
+    }
+
+    $scope.CetakPegawai = function(item) {
+        $scope.DataPegawai = item;
+        var Data = $scope.DataPegawai;
+        var UrlDataPegawai = "api/datas/setTanggal.php";
+        $http({
+                method: "post",
+                url: UrlDataPegawai,
+                data: Data
+            })
+            .then(function(response) {
+                if (response.data.message == true)
+                    window.open('apps/laporan/LaporanPegawai.html', '_blank')
+            }, function(error) {
+                alert(error.message);
+            })
+
+    }
+
+})
+
+.controller("HariLiburController", function($scope, $http, $rootScope, SessionService) {
+    $scope.DatasHariLibur = [];
+    //$rootScope.Session = {};
+    $scope.DataInputHariLibur = {};
+    $scope.DataSelected = {};
+    $scope.Init = function() {
+        //Auth
+        var Urlauth = "api/datas/auth.php";
+        $http({
+                method: "get",
+                url: Urlauth,
+            })
+            .then(function(response) {
+                if (response.data.Session == false) {
+                    window.location.href = 'login.html';
+                } else
+                    $rootScope.Session = response.data.Session;
+            }, function(error) {
+                alert(error.message);
+            })
+
+        //Get Hari Libur
+        var UrlAbsen = "api/datas/readHariLibur.php";
+        $http({
+                method: "get",
+                url: UrlAbsen,
+            })
+            .then(function(response) {
+                if (response.data.message != "No Hari Libur found")
+                    $scope.DatasHariLibur = response.data.records;
+                else
+                    alert(response.data.message);
+            }, function(error) {
+                alert(error.message);
+            })
+    }
+
+    //insert Hari Libur
+    $scope.InsertHariLibur = function() {
+        var Data = $scope.DataInputHariLibur;
+        var UrlInsertHariLibur = "api/datas/createHariLibur.php";
+        $http({
+                method: "post",
+                url: UrlInsertHariLibur,
+                data: Data
+            })
+            .then(function(response) {
+                if (response.data.message != "0") {
+                    Data.IdHari = response.data.message;
+                    $scope.DatasHariLibur.push(angular.copy(Data));
+                } else
+                    alert("Data Gagal disimpan");
+            }, function(error) {
+                alert(error.message);
             })
     }
 
     $scope.Selected = function(item) {
-        $scope.SelectedItem = item;
+        //$scope.DataSelected = item;
+        $scope.DataSelected.DariTgl = new Date(item.DariTgl);
+        $scope.DataSelected.SampaiTgl = new Date(item.SampaiTgl);
+        $scope.DataSelected.Keterangan = item.Keterangan;
+        $scope.DataSelected.IdHari = item.IdHari;
     }
 
-    $scope.UpdateSupplier = function() {
-        var urlupdateSupplier = "api/datas/Update/updateSupplier.php";
-        var Data = $scope.SelectedItem;
+    $scope.UpdateDataHariLibur = function() {
+        var Data = $scope.DataSelected;
+        var UrlUpdateHariLibur = "api/datas/updateHariLibur.php";
         $http({
                 method: "post",
-                url: urlupdateSupplier,
+                url: UrlUpdateHariLibur,
                 data: Data
             })
             .then(function(response) {
                 if (response.data.message == "Bidang was updated") {
-                    angular.forEach($scope.DatasSupplier, function(value, key) {
-                        if (value.IdSupplier == Data.IdSupplier) {
-                            value.NamaSupplier = Data.NamaSupplier;
-                            value.Telp = Data.Telp;
-                            value.Alamat = Data.Alamat;
+                    angular.forEach($scope.DatasHariLibur, function(value, key) {
+                        if (value.IdHari == Data.IdHari) {
+                            value.DariTgl = Data.DariTgl;
+                            value.SampaiTgl = Data.SampaiTgl;
+                            value.Keterangan = Data.Keterangan;
+                            alert(response.data.message);
                         }
-                    });
+                    })
+                } else
+                    alert(response.data.message);
+            }, function(error) {
+                alert(error.message);
+            })
+    }
+    $scope.Delete = function(item) {
+        $scope.DataSelected = item;
+        var Data = $scope.DataSelected;
+        var UrlDeleteHariLibur = "api/datas/deleteHariLibur.php";
+        $http({
+                method: "post",
+                url: UrlDeleteHariLibur,
+                data: Data
+            })
+            .then(function(response) {
+                if (response.data.message == "Hari Libur Berhasil Di Hapus") {
+                    $scope.DatasHariLibur.splice(Data, 1);
                     alert(response.data.message);
                 } else
-                    alert("Unable to create Supplier");
-            }, function(error) {
-                alert(error.Massage);
-            })
-    }
-})
-
-
-.controller("PembelianController", function($scope, $http, $rootScope, SessionService) {
-    $scope.DatasPembelian = [];
-    $scope.DataKategoris = [];
-    $scope.DatasBarang = [];
-    $scope.SelectedItemBarang = {};
-    $scope.DataItemBarang = [];
-    $scope.InputItemBarang = {};
-    $scope.SelectedItemBarang = {};
-    $scope.InputPenjualan = {};
-    $scope.DatasSupplier = [];
-    $scope.SelectedItemSupplier = {};
-    $scope.ViewDetailBarang = [];
-    $scope.InputPenjualan.TotalBayar = 0;
-
-    $scope.Init = function() {
-        var UrlKategori = "api/datas/Select/kategori.php";
-        $http({
-                method: "get",
-                url: UrlKategori,
-            })
-            .then(function(response) {
-                $scope.DataKategoris = response.data.records;
-            }, function(error) {
-                alert(error.message);
-            })
-
-        var UrlSupplier = "api/datas/Select/readSupplier.php";
-        $http({
-                method: "get",
-                url: UrlSupplier,
-            })
-            .then(function(response) {
-                $scope.DatasSupplier = response.data.records;
-            }, function(error) {
-                alert(error.message);
-            })
-
-        var UrlreadPembelian = "api/datas/Select/readPembelian.php";
-        $http({
-                method: "get",
-                url: UrlreadPembelian,
-            })
-            .then(function(response) {
-                $scope.DatasPembelian = response.data.records;
+                    alert("Data Tidak Terhapus");
             }, function(error) {
                 alert(error.message);
             })
     }
 
-    $scope.SelectedDetail = function(item) {
-        $scope.ViewDetailBarang = item;
-    }
-
-    $scope.ChangeBarang = function(item) {
-        var Data = item;
-        var UrlBarang = "api/datas/Select/readBarangByKategori.php";
-        $http({
-                method: "post",
-                url: UrlBarang,
-                data: Data
-            })
-            .then(function(response) {
-                $scope.DatasBarang = response.data.records;
-            }, function(error) {
-                alert(error.message);
-            })
-    }
-
-    $scope.TambahItemBarang = function() {
-        $scope.InputItemBarang.BarangId = $scope.SelectedItemBarang.IdBarang;
-        $scope.InputItemBarang.NamaBarang = $scope.SelectedItemBarang.NamaBarang;
-        $scope.DataItemBarang.push(angular.copy($scope.InputItemBarang));
-        $scope.InputPenjualan.TotalBayar += parseInt($scope.InputItemBarang.Jumlah) * parseInt($scope.InputItemBarang.HargaBeli);
-
-        $scope.SelectedItemKategori = {};
-        $scope.SelectedItemBarang = {};
-        $scope.InputItemBarang = {};
-
-    }
-
-    $scope.InsertPembelian = function() {
-        $scope.InputPenjualan.SupplierId = $scope.SelectedItemSupplier.IdSupplier;
-        $scope.InputPenjualan.NamaSupplier = $scope.SelectedItemSupplier.NamaSupplier;
-        $scope.InputPenjualan.ItemBarang = $scope.DataItemBarang;
-        var UrlInsert = "api/datas/Create/createPembelian.php";
-        var Data = $scope.InputPenjualan;
-
-        $http({
-                method: "post",
-                url: UrlInsert,
-                data: Data
-            })
-            .then(function(response) {
-                var NewData = response.data;
-                $scope.DatasPembelian.push(angular.copy(NewData))
-                $scope.InputPenjualan = {};
-                $scope.SelectedItemSupplier = {};
-                $scope.DataItemBarang = [];
-                alert("Pembelian was created")
-                window.location.href = 'gudang.html#!/Pembelian';
-            }, function(error) {
-                alert(error.message);
-            })
-
-        $scope.InputPenjualan = {};
-        $scope.SelectedItemSupplier = {};
-        $scope.DataItemBarang = [];
-
-    }
 
 })
 
-.controller("ReturnController", function($scope, $http, $rootScope, SessionService) {
-    $scope.DatasReturn = [];
-    $scope.DatasSupplier = [];
-    $scope.DatasItemBarang = [];
-    $scope.RepositoryDatasItemBarang = [];
-    $scope.SelectedItemSupplier = {};
-    $scope.InputBarang = {};
-    $scope.SelectedItemBarang = {};
-    $scope.DataTanggal = {};
+.controller("StatusAbsenController", function($scope, $http) {
+    $scope.DatasStatusAbsen = [];
+    $scope.DatasPegawai = [];
+    $scope.DataJenis = [{ 'jenis': 'Izin' }, { 'jenis': 'Cuti' }, { 'jenis': 'Sakit' }, { 'jenis': 'DL' }];
+    $scope.DataInput = {};
+    $scope.SelectedItemPegawai = {};
+    $scope.SelectedJenis = {};
+    $scope.DataSelected = {};
     $scope.Init = function() {
-        var UrlSupplier = "api/datas/Select/readSupplier.php";
+        //Get Data Pegawai
+        var UrlPegawai = "api/datas/readPegawai.php";
         $http({
                 method: "get",
-                url: UrlSupplier,
+                url: UrlPegawai
             })
             .then(function(response) {
-                $scope.DatasSupplier = response.data.records;
+                $scope.DatasPegawai = response.data.records;
             }, function(error) {
                 alert(error.message);
             })
 
-        var UrlReturn = "api/datas/Select/readReturn.php";
+        //Get Data Status
+        var UrldataStatus = "api/datas/readStatusAbsen.php";
         $http({
                 method: "get",
-                url: UrlReturn,
+                url: UrldataStatus
             })
             .then(function(response) {
-                $scope.DatasReturn = response.data.records;
-
+                $scope.DatasStatusAbsen = response.data.records;
             }, function(error) {
                 alert(error.message);
             })
+
     }
 
-    $scope.SelectBarang = function(item) {
-        var Data = item;
-        var UrlDataBarang = "api/datas/Select/readDataBarang.php";
-        $http({
-                method: "post",
-                url: UrlDataBarang,
-                data: Data
-            })
-            .then(function(response) {
-                $scope.DatasItemBarang = response.data.Barang;
-                angular.forEach($scope.DatasItemBarang, function(value, key) {
-                    var a = angular.copy(new Date(value.TglBeli));
-                    value.TglBeli = a;
-                })
-            }, function(error) {
-                alert(error.message);
-            })
-    }
-
-    $scope.SelectedTanggal = function() {
-        var newdatebeli = $scope.InputBarang.TglBeli.getFullYear() + '-' + ($scope.InputBarang.TglBeli.getMonth() + 1) + '-' + $scope.InputBarang.TglBeli.getDate();
-        var Dataloop = angular.copy($scope.DatasItemBarang);
-        angular.forEach(Dataloop, function(value, key) {
-            var valtgl = value.TglBeli.getFullYear() + '-' + (value.TglBeli.getMonth() + 1) + '-' + value.TglBeli.getDate();
-            if (newdatebeli != valtgl) {
-                $scope.DatasItemBarang.splice(value, 1);
+    $scope.Selected = function(item) {
+        $scope.DataSelected = angular.copy(item);
+        $scope.DataSelected.Pengajuan = new Date(item.Pengajuan);
+        $scope.DataSelected.TglMulai = new Date(item.TglMulai);
+        $scope.DataSelected.TglSelesai = new Date(item.TglSelesai);
+        angular.forEach($scope.DatasPegawai, function(value, key) {
+            if (value.Nip == item.Nip) {
+                $scope.SelectedItemPegawai = value;
             }
         })
+        $scope.SelectedJenis.jenis = item.Jenis;
 
     }
 
-    $scope.InsertReturn = function() {
-        $scope.InputBarang.IdSupplier = $scope.SelectedItemSupplier.IdSupplier;
-        $scope.InputBarang.DetailId = $scope.SelectedItemBarang.IdDetail;
-        $scope.InputBarang.NamaBarang = $scope.SelectedItemBarang.NamaBarang;
-        $scope.InputBarang.NamaSupplier = $scope.SelectedItemSupplier.NamaSupplier;
-        var Data = $scope.InputBarang;
-        var Url = "api/datas/Create/createReturn.php";
+    $scope.InsertStatusAbsen = function() {
+        $scope.DataInput.Nip = $scope.SelectedItemPegawai.Nip;
+        $scope.DataInput.Nama = $scope.SelectedItemPegawai.Nama;
+        $scope.DataInput.Jenis = $scope.SelectedJenis.jenis;
+        var Data = $scope.DataInput;
+        var UrlStatus = "api/datas/createStatusAbsen.php";
         $http({
                 method: "post",
-                url: Url,
+                url: UrlStatus,
                 data: Data
             })
             .then(function(response) {
                 if (response.data.message > 1) {
-                    Data.IdReturn = response.data.message;
-                    $scope.DatasReturn.push(angular.copy(Data));
-                    alert("Return Was Created");
-                    //window.location.reload();
-                } else
-                    alert(response.data.message);
-            }, function(error) {
-                alert(error.message);
-            })
-    }
-
-})
-
-.controller("KaryawanController", function($scope, $http, $rootScope, SessionService) {
-    $scope.DatasKaryawan = [];
-    $scope.InputKaryawan = {};
-    $scope.DataUpdateKaryawan = {};
-    $scope.Init = function() {
-        var UrlReadKaryawan = "api/datas/Select/readKaryawan.php";
-        $http({
-                method: "get",
-                url: UrlReadKaryawan
-            })
-            .then(function(response) {
-                if (response.data.message == "Karyawan Found") {
-                    $scope.DatasKaryawan = response.data.records;
-                } else
-                    alert(response.data.message);
-
+                    Data.Id = response.data.message;
+                    $scope.DatasStatusAbsen.push(Data);
+                }
             }, function(error) {
                 alert(error.message);
             })
 
+        $scope.SelectedItemPegawai = {};
+        $scope.SelectedJenis = {};
     }
 
-    $scope.InsertKaryawan = function() {
-        var Data = $scope.InputKaryawan;
-        var UrlInsertKaryawan = "api/datas/Create/createKaryawan.php"
+    $scope.UpdateStatusAbsen = function() {
+        var newdateMulai = $scope.DataSelected.TglMulai.getFullYear() + '-' + ($scope.DataSelected.TglMulai.getMonth() + 1) + '-' + ($scope.DataSelected.TglMulai.getDate() - 1);
+        $scope.DataSelected.TglMulai = newdateMulai;
+        var newdateSelesai = $scope.DataSelected.TglSelesai.getFullYear() + '-' + ($scope.DataSelected.TglSelesai.getMonth() + 1) + '-' + ($scope.DataSelected.TglSelesai.getDate() - 1);
+        $scope.DataSelected.TglSelesai = newdateSelesai;
+        var newdatePengajuan = $scope.DataSelected.Pengajuan.getFullYear() + '-' + ($scope.DataSelected.Pengajuan.getMonth() + 1) + '-' + ($scope.DataSelected.Pengajuan.getDate() - 1);
+        $scope.DataSelected.Pengajuan = newdatePengajuan;
+        var Data = $scope.DataSelected;
+        var UrlStatusAbsen = "api/datas/updateStatusAbsen.php";
         $http({
                 method: "post",
-                url: UrlInsertKaryawan,
+                url: UrlStatusAbsen,
                 data: Data
             })
             .then(function(response) {
-                if (response.data.message != "Unable to create Karyawan") {
-                    Data.IdKaryawan = response.data.message;
-                    Data.Status = "true";
-                    $scope.DatasKaryawan.push(angular.copy(Data));
-                    alert("Karyawan Was Created");
-                    window.location.href = 'admin.html#!/Karyawan';
-                } else
-                    alert(response.data.message);
-            }, function(error) {
-                alert(error.message);
-            })
-    }
-
-    $scope.Selected = function(item) {
-        $scope.DataUpdateKaryawan = item;
-    }
-
-    $scope.UpdateKaryawan = function() {
-        var Data = $scope.DataUpdateKaryawan;
-        var UrlUpdateKaryawan = "api/datas/Update/updateKaryawan.php"
-        $http({
-                method: "post",
-                url: UrlUpdateKaryawan,
-                data: Data
-            })
-            .then(function(response) {
-                if (response.data.message == "Karyawan Was Update") {
-                    angular.forEach($scope.DatasKaryawan, function(value, key) {
-                        if (value.IdKaryawan == Data.IdKaryawan) {
-                            value.Nama = Data.Nama;
-                            value.Sex = Data.Sex;
-                            value.Kontak = Data.Kontak;
-                            value.Alamat = Data.Alamat;
-                            value.Email = Data.Email;
-                            value.LevelAkses = Data.LevelAkses;
-                            value.Status = Data.Status;
+                if (response.data.message == "Status Was Update") {
+                    angular.forEach($scope.DatasStatusAbsen, function(value, key) {
+                        if (value.Id == Data.Id) {
+                            value.Jenis = Data.Jenis;
+                            value.TglPengajuan = response.data.TglPengajuan;
+                            value.TglMulai = response.data.TglMulai;
+                            value.TglSelesai = response.data.TglSelesai;
+                            value.Keterangan = Data.Keterangan;
+                            alert(response.data.message);
+                            window.location.href = 'index.html#!/StatusAbsen';
                         }
                     })
-                    alert(response.data.message);
-                    window.location.href = 'admin.html#!/Karyawan';
                 } else
                     alert(response.data.message);
             }, function(error) {
                 alert(error.message);
             })
     }
-})
 
-.controller("PriceController", function($scope, $http, SessionService) {
-    $scope.DatasPrice = [];
-    $scope.InputPrice = {};
-    $scope.DataUpdatePrice = {};
-    $scope.DatasBarang = [];
-    $scope.SelectedItemBarang = {}
-    $scope.Init = function() {
-        var UrlReadPrice = "api/datas/Select/readPrice.php";
-        $http({
-                method: "get",
-                url: UrlReadPrice
-            })
-            .then(function(response) {
-                if (response.data.message == "Price Was Create") {
-                    $scope.DatasPrice = response.data.records;
-                } else
-                    alert(response.data.message);
-            }, function(error) {
-                alert(error.message);
-            })
-
-        var UrlreadBarang = "api/datas/Select/readBarang.php";
-        $http({
-                method: "get",
-                url: UrlreadBarang
-            })
-            .then(function(response) {
-                if (response.data.message == "Barang is Found") {
-                    $scope.DatasBarang = response.data.records;
-                } else
-                    alert(response.data.message);
-            }, function(error) {
-                alert(error.message);
-            })
-    }
-    $scope.InsertPrice = function() {
-        var newdate = $scope.InputPrice.CreateDate.getFullYear() + '-' + ($scope.InputPrice.CreateDate.getMonth() + 1) + '-' + $scope.InputPrice.CreateDate.getDate();
-        $scope.InputPrice.CreateDate = angular.copy(newdate);
-        $scope.InputPrice.BarangId = $scope.SelectedItemBarang.IdBarang;
-        $scope.InputPrice.NamaBarang = $scope.SelectedItemBarang.NamaBarang;
-        var Data = $scope.InputPrice;
-        var UrlInsertPrice = "api/datas/Create/createPrice.php";
+    $scope.Delete = function(item) {
+        $scope.DataSelected = item;
+        var Data = $scope.DataSelected;
+        var UrlDeleteStatusAbsen = "api/datas/deleteStatusAbsen.php";
         $http({
                 method: "post",
-                url: UrlInsertPrice,
+                url: UrlDeleteStatusAbsen,
                 data: Data
             })
             .then(function(response) {
-                if (response.data.message != "Unable to Create Price") {
-                    Data.IdPrice = response.data.message;
-                    $scope.DatasPrice.splice(Data, 1);
-                    $scope.DatasPrice.push(angular.copy(Data));
-                    alert("Price Was Create");
-                    window.location.reload();
-                } else
+                if (response.data.message == "Perangkat Berhasil Di Hapus") {
+                    $scope.DatasStatusAbsen.splice(Data, 1);
                     alert(response.data.message);
-
-            }, function(error) {
-                alert(error.message);
-            })
-    }
-    $scope.Selected = function(item) {
-        var datenew = new Date(item.CreateDate);
-        $scope.DataUpdatePrice = angular.copy(item);
-        $scope.DataUpdatePrice.CreateDate = datenew;
-        angular.forEach($scope.DatasBarang, function(value, key) {
-            if (value.IdBarang == item.BarangId) {
-                $scope.SelectedItemBarang = value;
-            }
-        })
-    }
-    $scope.UpdatePrice = function() {
-        var newdate = $scope.DataUpdatePrice.CreateDate.getFullYear() + '-' + '0' + ($scope.DataUpdatePrice.CreateDate.getMonth() + 1) + '-' + $scope.DataUpdatePrice.CreateDate.getDate();
-        $scope.DataUpdatePrice.BarangId = $scope.SelectedItemBarang.IdBarang;
-        $scope.DataUpdatePrice.CreateDate = angular.copy(newdate);
-        $scope.DataUpdatePrice.NamaBarang = $scope.SelectedItemBarang.NamaBarang;
-        var Data = $scope.DataUpdatePrice;
-        var UrlUpdatePrice = "api/datas/Update/updatePrice.php";
-        $http({
-                method: "post",
-                url: UrlUpdatePrice,
-                data: Data
-            })
-            .then(function(response) {
-                if (response.data.message == "Price Was Update") {
-                    angular.forEach($scope.DatasPrice, function(value, key) {
-                        if (value.IdPrice == Data.IdPrice) {
-                            value.Price = Data.Price;
-                            value.CreateDate = Data.CreateDate;
-                            value.BarangId = Data.BarangId;
-                        }
-                    })
-                    alert("Price Was Create");
                 } else
-                    alert(response.data.message);
-
+                    alert("Data Tidak Terhapus");
             }, function(error) {
                 alert(error.message);
             })
     }
 
-
-})
-
-.controller("DiscountController", function($scope, $http, SessionService) {
-    $scope.DatasDiscount = [];
-    $scope.InputDiscount = {};
-    $scope.DataUpdatePrice = {};
-    $scope.DatasBarang = [];
-    $scope.SelectedItemBarang = {}
-    $scope.Init = function() {
-        var UrlReadDiscount = "api/datas/Select/readDiscount.php";
-        $http({
-                method: "get",
-                url: UrlReadDiscount
-            })
-            .then(function(response) {
-                if (response.data.message == "Discount is Found") {
-                    $scope.DatasDiscount = response.data.records;
-                } else
-                    alert(response.data.message);
-            }, function(error) {
-                alert(error.message);
-            })
-
-        var UrlreadBarang = "api/datas/Select/readBarang.php";
-        $http({
-                method: "get",
-                url: UrlreadBarang
-            })
-            .then(function(response) {
-                if (response.data.message == "Barang is Found") {
-                    $scope.DatasBarang = response.data.records;
-                } else
-                    alert(response.data.message);
-            }, function(error) {
-                alert(error.message);
-            })
-    }
-    $scope.InsertDiscount = function() {
-        var newdate = $scope.InputDiscount.MasaBerlaku.getFullYear() + '-' + ($scope.InputDiscount.MasaBerlaku.getMonth() + 1) + '-' + $scope.InputDiscount.MasaBerlaku.getDate();
-        $scope.InputDiscount.MasaBerlaku = angular.copy(newdate);
-        $scope.InputDiscount.BarangId = $scope.SelectedItemBarang.IdBarang;
-        $scope.InputDiscount.NamaBarang = $scope.SelectedItemBarang.NamaBarang;
-        var Data = $scope.InputDiscount;
-        var Url = "api/datas/Create/createDiscount.php";
-        $http({
-                method: "post",
-                url: Url,
-                data: Data
-            })
-            .then(function(response) {
-                if (response.data.message != "Unable to Create Discount") {
-                    Data.IdDiscount = response.data.message;
-                    $scope.DatasDiscount.push(angular.copy(Data));
-                    alert("Discount Was Create");
-                    window.location.reload();
-                } else
-                    alert(response.data.message);
-
-            }, function(error) {
-                alert(error.message);
-            })
-    }
-    $scope.Selected = function(item) {
-        var datenew = new Date(item.MasaBerlaku);
-        $scope.DataUpdatePrice = angular.copy(item);
-        $scope.DataUpdatePrice.MasaBerlaku = datenew;
-        angular.forEach($scope.DatasBarang, function(value, key) {
-            if (value.IdBarang == item.BarangId) {
-                $scope.SelectedItemBarang = value;
-            }
-        })
-    }
-    $scope.UpdateDiscount = function() {
-        var newdate = $scope.DataUpdatePrice.MasaBerlaku.getFullYear() + '-' + '0' + ($scope.DataUpdatePrice.MasaBerlaku.getMonth() + 1) + '-' + $scope.DataUpdatePrice.MasaBerlaku.getDate();
-        $scope.DataUpdatePrice.BarangId = $scope.SelectedItemBarang.IdBarang;
-        $scope.DataUpdatePrice.MasaBerlaku = angular.copy(newdate);
-        $scope.DataUpdatePrice.NamaBarang = $scope.SelectedItemBarang.NamaBarang;
-        var Data = $scope.DataUpdatePrice;
-        var Url = "api/datas/Update/updateDiscount.php";
-        $http({
-                method: "post",
-                url: Url,
-                data: Data
-            })
-            .then(function(response) {
-                if (response.data.message != "Unable to Create Discount") {
-                    angular.forEach($scope.DatasDiscount, function(value, key) {
-                        if (value.IdDiscount == Data.IdDiscount) {
-                            value.Discount = Data.Discount;
-                            value.MasaBerlaku = Data.MasaBerlaku;
-                            value.BarangId = Data.BarangId;
-                            value.NamaBarang = Data.NamaBarang;
-                        }
-                    })
-                    alert("Price Was Create");
-                } else
-                    alert(response.data.message);
-
-            }, function(error) {
-                alert(error.message);
-            })
-    }
-
-})
-
-.controller("PenjualanController", function($scope, $http, SessionService) {
-    $scope.DatasPenjualan = [];
-    $scope.DatasBarang = [];
-    $scope.InputPenjualan = {};
-    $scope.InputPenjualan.TotalBayar = 0;
-    $scope.Jumlah = {};
-    $scope.DataItemDetail = {};
-    $scope.InputPenjualan.ItemBarang = [];
-    $scope.Init = function() {
-        var Url = "api/datas/Select/readPenjualan.php";
-        $http({
-            method: "get",
-            url: Url
-        }).then(function(response) {
-            if (response.data.message == "Penjualan is Found") {
-                $scope.DatasPenjualan = response.data.records;
-            }
-
-        }, function(error) {
-            alert(error.message);
-
-        })
-
-
-    }
-    $scope.SetBarang = function() {
-        var Url = "api/datas/Select/readBarangJual.php";
-        $http({
-            method: "get",
-            url: Url
-        }).then(function(response) {
-            if (response.data.message == "Barang is Found") {
-                $scope.DatasBarang = response.data.records;
-                $scope.InputPenjualan.Nota = response.data.Nota;
-                $scope.InputPenjualan.KaryawanId = response.data.KaryawanId;
-            }
-
-        }, function(error) {
-            alert(error.message);
-        })
-    }
-
-    $scope.AddItem = function(item) {
-        item.Jumlah = $scope.Jumlah.jumlah;
-        $scope.InputPenjualan.TotalBayar += (parseInt(item.Jumlah) * parseInt(item.Price));
-        $scope.InputPenjualan.ItemBarang.push(angular.copy(item));
-    }
-
-    $scope.InsertPenjualan = function() {
-        var Url = "api/datas/Create/createPenjualan.php";
-        var Data = $scope.InputPenjualan;
-        $http({
-            method: "post",
-            url: Url,
-            data: Data
-        }).then(function(response) {
-            window.location.href = 'penjualan.html#!/Penjualan';
-        }, function(error) {
-            alert(error.message);
-        })
-    }
-
-    $scope.SelectedDetail = function(item) {
-        $scope.DataItemDetail = item;
-    }
-
-
-})
-
-.controller("LaporanController", function($scope, $http, SessionService) {
-
-
-
-})
-
-
-.controller("Controller", function($scope, $http, SessionService) {
-
-
-})
-
-
-;
+});
