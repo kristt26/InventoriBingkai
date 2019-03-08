@@ -8,7 +8,7 @@
     <!-- Core CSS - Include with every page -->
     <link rel="icon" type="image/png" href="assets/img/IconLogo.png" />
     <link href="assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
     <link href="assets/css/style.css" rel="stylesheet" />
     <link href="assets/css/main-style.css" rel="stylesheet" />
@@ -34,7 +34,7 @@
                         <form role="form">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="E-mail" name="email" type="email" ng-model="DataLogin.Email" autofocus value="kristt26@gmail.com">
+                                    <input class="form-control" placeholder="Username" name="Username" type="text" ng-model="DataLogin.Username" autofocus>
                                 </div>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Password" name="password" type="password" ng-model="DataLogin.Password" value="12345">
@@ -46,7 +46,6 @@
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
                                 <a href="" class="btn btn-lg btn-success btn-block" ng-click="Loggin()">Login</a>
-                                <a href="" class="btn btn-lg btn-success btn-block" ng-click="Absen()">Absen</a>
                             </fieldset>
                         </form>
                     </div>
@@ -65,23 +64,6 @@
         angular.module("Ctrl", [])
             .controller("LoginController", function($scope, $http) {
                 $scope.DataLogin = {};
-                $scope.DataMac = {};
-                $scope.Init = function() {
-                    var Urlauth = "api/datas/getMac.php";
-                    $http({
-                            method: "get",
-                            url: Urlauth
-                        })
-                        .then(function(response) {
-                            $scope.DataMac = response.data;
-                            alert(response.data.MacAddress);
-
-
-                        }, function(error) {
-                            alert(error.message);
-                        })
-                }
-                $scope.DataLogin = {};
                 $scope.Loggin = function() {
                     var Data = $scope.DataLogin;
                     var Urlauth = "api/datas/login.php";
@@ -90,33 +72,15 @@
                         url: Urlauth,
                         data: Data
                     }).then(function(response) {
-                        if (response.data.records[0].Jabatan == "Admin") {
+                        if (response.data.Level == "Admin") {
                             window.location.href = 'index.html';
                         } else {
-                            window.location.href = 'pegawai.html';
+                            window.location.href = 'kasir.html';
                         }
                     }, function(error) {
                         alert(error.message);
                     });
                 }
-
-                $scope.Absen = function() {
-                    $scope.DataLogin.MacAddress = $scope.DataMac.MacAddress;
-                    $scope.DataLogin.Keterangan = "Kosong";
-                    var Data = $scope.DataLogin;
-                    var Urlabsen = "api/datas/createAbsen.php";
-                    $http({
-                            method: "post",
-                            url: Urlabsen,
-                            data: Data
-                        })
-                        .then(function(response) {
-                            alert(response.data.message)
-                        }, function(error) {
-                            alert(error.message);
-                        })
-                }
-
             })
     </script>
 

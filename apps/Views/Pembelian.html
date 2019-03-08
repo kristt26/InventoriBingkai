@@ -1,0 +1,124 @@
+<div class="row">
+    <div class="col-12 d-flex no-block align-items-center">
+        <h3 class="page-title">Data Pembelian</h3>
+        <div class="ml-auto text-right">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <button class="btn btn-primary pull-right" title="Tambah Bingkai" data-toggle="modal"
+                        data-target="#TambahPembelian">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<div ng-init="Init()">
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th>Ukuran Bingkai</th>
+                                    <th>Tanggal Beli</th>
+                                    <th>Harga Beli</th>
+                                    <th>Jumlah</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="odd gradeX" ng-repeat="item in DatasPembelian">
+                                    <td>{{item.Bingkai[0].Ukuran}}</td>
+                                    <td>{{item.TanggalBeli}}</td>
+                                    <td>{{item.HargaBeli}}</td>
+                                    <td>{{item.Jumlah}}</td>
+                                    <td>
+                                        <button class="btn btn-success btn-circle pull-left" title="Update Pembelian"
+                                            data-toggle="modal" data-target="#UpdatePembelian" ng-click="Selected(item)">
+                                            <i class="fa fa-user-edit" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <!--End Advanced Tables -->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="TambahPembelian" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Tambah Pembelian</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <label>Bingkai</label>
+                    <div class="form-group">
+                        <select class="form-control" ng-options="item as item.Ukuran for item in DatasBingkai track by item.Ukuran"
+                            ng-model="SelectedUkuran"></select>
+                    </div>
+                    <label>Tanggal Pembelian</label>
+                    <div class="form-group">
+                        <input class="form-control" type="date" placeholder="Tanggal" ng-model="DataInsert.TanggalBeli">
+                    </div>
+                    <label>Harga Beli</label>
+                    <div class="form-group">
+                        <input class="form-control" placeholder="Harga" ng-model="DataInsert.HargaBeli">
+                    </div>
+                    <label>Jumlah</label>
+                    <div class="form-group">
+                        <input class="form-control" placeholder="Jumlah" ng-model="DataInsert.Jumlah">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="Insert()" data-dismiss="modal">Save
+                    changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="UpdatePembelian" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Update Pembelian</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <label>Bingkai</label>
+                    <div class="form-group">
+                        <input class="form-control" ng-model="DataInsert.Bingkai[0].Ukuran" disabled>
+                    </div>
+                    <label>Harga Beli</label>
+                    <div class="form-group">
+                        <input class="form-control" placeholder="Harga" ng-model="DataInsert.HargaBeli">
+                    </div>
+                    <label>Jumlah</label>
+                    <div class="form-group">
+                        <input class="form-control" placeholder="Jumlah" ng-model="DataInsert.Jumlah">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="Update()" data-dismiss="modal">Save
+                    changes</button>
+            </div>
+        </div>
+    </div>
+</div>

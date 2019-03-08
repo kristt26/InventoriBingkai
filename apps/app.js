@@ -6,61 +6,26 @@ app.config(function($routeProvider) {  
             controller: "MainController"
         })
 
-    .when("/Pegawai", {
-        templateUrl: "apps/Views/pegawai.html",
-        controller: "pegawaiController"
+    .when("/User", {
+        templateUrl: "apps/Views/User.html",
+        controller: "UserController"
     })
-
-    .when("/Bidang", {
-        templateUrl: "apps/Views/Bidang.html",
-        controller: "BidangController"
+    .when("/Bingkai", {
+        templateUrl: "apps/Views/Bingkai.html",
+        controller: "BingkaiController"
     })
-
-    .when("/Logout", {
-        templateUrl: "apps/Views/Bidang.html",
-        controller: "LogoutController"
+    .when("/Pembelian", {
+        templateUrl: "apps/Views/Pembelian.html",
+        controller: "PembelianController"
     })
-
-    .when("/login", {
-        templateUrl: "apps/Views/login.html",
-        controller: "LoginController"
+    .when("/Stock", {
+        templateUrl: "apps/Views/Stock.html",
+        controller: "StockController"
     })
-
-    .when("/login", {
-        templateUrl: "apps/Views/login.html",
-        controller: "LoginController"
+    .when("/Transaksi", {
+        templateUrl: "apps/Views/Transaksi.html",
+        controller: "TransaksiController"
     })
-
-    .when("/DaftarAbsen", {
-        templateUrl: "apps/Views/daftarabsen.html",
-        controller: "DaftarAbsenController"
-    })
-
-    .when("/ViewAbsen", {
-        templateUrl: "apps/Views/ViewAbsen.html",
-        controller: "ViewAbsenController"
-    })
-
-    .when("/HariLibur", {
-        templateUrl: "apps/Views/HariLibur.html",
-        controller: "HariLiburController"
-    })
-
-    .when("/Perangkat", {
-        templateUrl: "apps/Views/Perangkat.html",
-        controller: "PerangkatController"
-    })
-
-    .when("/StatusAbsen", {
-        templateUrl: "apps/Views/StatusAbsen.html",
-        controller: "StatusAbsenController"
-    })
-
-    .when("/Collies", {
-        templateUrl: "apps/Views/Collies.html",
-        controller: "ColliesController"
-    })
-
     .otherwise({ redirectTo: '/Main' })
 
 })

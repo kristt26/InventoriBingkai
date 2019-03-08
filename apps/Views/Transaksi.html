@@ -1,0 +1,73 @@
+<div class="card" ng-init="Init()">
+    <form class="form-horizontal">
+        <div class="card-body">
+            <h4 class="card-title">Stock Bingkai</h4>
+            <div class="form-group row">
+                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Ukuran</label>
+                <div class="col-sm-4">
+                    <select class="form-control"
+                        ng-options="item as item.Ukuran for item in DatasStock.Ukuran track by item.Ukuran"
+                        ng-model="SelectedUkuran" ng-change="ShowStock()"></select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="lname" class="col-sm-3 text-right control-label col-form-label">Warna</label>
+                <div class="col-sm-4">
+                    <select class="form-control"
+                        ng-options="item as item.Warna for item in DatasStock.Warna track by item.Warna"
+                        ng-model="SelectedWarna" ng-change="ShowStock()"></select>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form ng-show="Tampilstock" ng-hide="Hidestock" class="form-horizontal">
+        <div class="card-body">
+            <div class="form-group row">
+                <label for="fname" class="col-sm-3 text-right control-label col-form-label"></label>
+                <div class="col-sm-4">
+                    <textarea class="form-control" ng-model="DataTampil.Stock" disabled></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="cono1" class="col-sm-3 text-right control-label col-form-label"></label>
+                <div class="col-sm-9">
+                    <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#CheckOut">Check
+                        Out</button>
+                </div>
+            </div>
+    </form>
+</div>
+
+<div class="modal fade" id="CheckOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Proses Check Out</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="fname" class="col-sm-4 text-right control-label col-form-label">Jumlah Check
+                                Out</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="fname" ng-model="DataTampil.DataOut">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary" ng-click="CheckOut()" data-dismiss="modal">Check Out</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

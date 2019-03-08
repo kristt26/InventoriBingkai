@@ -7,43 +7,37 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
  
 // get database connection
-include_once '../../api/config/database.php';
+include_once '../../../api/config/database.php';
  
 // instantiate product object
-include_once '../../api/objects/pegawai.php';
+include_once '../../../api/objects/User.php';
  
 $database = new Database();
 $db = $database->getConnection();
  
-$pegawai = new Pegawai($db);
+$user = new User($db);
  
 // get posted data
 $data =json_decode(file_get_contents("php://input"));
  
 
 // set product property values
-$pegawai->Nip = $data->Nip;
-$pegawai->Nama = $data->Nama;
-$pegawai->Alamat = $data->Alamat;
-$pegawai->Kontak = $data->Kontak;
-$pegawai->Sex = $data->Sex;
-$pegawai->IdBidang = $data->IdBidang;
-$pegawai->Jabatan = $data->Jabatan;
-$pegawai->Pangkat = $data->Pangkat;
-$pegawai->Email = $data->Email;
-$pegawai->Password = md5("12345678");
+$user->Nama = $data->Nama;
+$user->Username = $data->Username;
+$user->Level = $data->Level;
+$user->Password = md5($data->Password);
  
 // create the product
-if($pegawai->create()){
-    echo '{';
-        echo '"message": "Product was created"';
-    echo '}';
+if($user->create()){
+    http_response_code(200);
+    echo json_encode(array("message" => $user->IdUser));
 }
  
 // if unable to create the product, tell the user
 else{
+    http_response_code(501);
     echo '{';
-        echo '"message": "Unable to create product."';
+        echo '"message": "Unable to create user."';
     echo '}';
 }
 

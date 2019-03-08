@@ -7,44 +7,38 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
  
 // include database and object files
-include_once '../../api/config/database.php';
-include_once '../../api/objects/Pegawai.php';
+include_once '../../../api/config/database.php';
+include_once '../../../api/objects/User.php';
  
 // get database connection
 $database = new Database();
 $db = $database->getConnection();
  
 // prepare product object
-$pegawai = new Pegawai($db);
+$user = new User($db);
  
 // get id of product to be edited
 $data = json_decode(file_get_contents("php://input"));
  
 // set ID property of product to be edited
-$pegawai->Nip = $data->Nip;
- 
-// set product property values
-$pegawai->Nip = $data->Nip;
-$pegawai->Nama = $data->Nama;
-$pegawai->Alamat = $data->Alamat;
-$pegawai->Kontak = $data->Kontak;
-$pegawai->Sex = $data->Sex;
-$pegawai->IdBidang = $data->IdBidang;
-$pegawai->Jabatan = $data->Jabatan;
-$pegawai->Pangkat = $data->Pangkat;
-$pegawai->Email = $data->Email;
+$user->IdUser = $data->IdUser;
+$user->Nama = $data->Nama;
+$user->Username = $data->Username;
+$user->Level = $data->Level;
  
 // update the product
-if($pegawai->update()){
+if($user->update()){
+    http_response_code(200);
     echo '{';
-        echo '"message": "Product was updated"';
+        echo '"message": "User was Update"';
     echo '}';
 }
  
 // if unable to update the product, tell the user
 else{
+    http_response_code(501);
     echo '{';
-        echo '"message": "Unable to update product"';
+        echo '"message": "Unable to update User"';
     echo '}';
 }
 ?>

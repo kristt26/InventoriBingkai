@@ -19,7 +19,7 @@ $data = json_decode(file_get_contents("php://input"));
 
 // set product property values
 
-$login->Email = $data->Email;
+$login->Username = $data->Username;
 $login->Password = md5($data->Password);
 
 
@@ -44,27 +44,14 @@ try {
         // this will make $row['name'] to
         // just $name only
             extract($row);
-            $_SESSION['Nip'] = $Nip;
+            $_SESSION['IdUser'] = $IdUser;
             $_SESSION['Nama'] = $Nama;
+            $_SESSION['Username'] = $Username;
+            $_SESSION['Level'] = $Level;
 
-            $product_item = array(
-                "Nip" => $Nip,
-                "Nama" => $Nama,
-                "Alamat" => html_entity_decode($Alamat),
-                "Kontak" => $Kontak,
-                "Sex" => $Sex,
-                "IdBidang" => $IdBidang,
-                "NamaBidang" => $NamaBidang,
-                "Jabatan" => $Jabatan,
-                "Email" => $Email,
-                "Session" => $_SESSION,
-                "Message" => true
-            );
-
-            array_push($products_arr["records"], $product_item);
         }
 
-        echo json_encode($products_arr);
+        echo json_encode($_SESSION);
     } else {
         throw new Exception('You Not Have Access');
     }

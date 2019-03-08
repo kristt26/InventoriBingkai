@@ -15,6 +15,7 @@ class Login{
     public $NamaBidang;
     public $Jabatan;
     public $Email;
+    public $Username;
     public $Password;
  
     // constructor with $db as database connection
@@ -26,7 +27,7 @@ class Login{
     function CheckSession()
     {
         session_start();
-        if(!isset($_SESSION['Nip']))
+        if(!isset($_SESSION['Nama']))
         {
             return false;
         }else{
@@ -38,11 +39,11 @@ class Login{
     //login function
     function LoginUser()
     {
-        $query = "SELECT p.Nip, p.Nama, p.Alamat, p.Kontak, p.Sex, b.IdBidang,b.NamaBidang, p.Jabatan, p.Email from pegawai p, bidang b where p.IdBidang=b.IdBidang and p.Email=? and p.Password=?";
+        $query = "SELECT IdUser, Nama, Level, Username from user where Username=? and Password=?";
         
            // prepare query statement
            $stmt = $this->conn->prepare($query);
-           $stmt->bindParam(1, $this->Email);
+           $stmt->bindParam(1, $this->Username);
            $stmt->bindParam(2, $this->Password);
         
            // execute query

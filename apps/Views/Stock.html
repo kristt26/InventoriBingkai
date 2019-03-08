@@ -1,0 +1,134 @@
+<div class="row">
+    <h3>Data Stock</h3>
+</div>
+<div class="row">
+
+    <div class="col-12 d-flex no-block align-items-center">
+        <div class="alert alert-success">
+            
+            <form role="form" class="form-inline">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">
+                        Ukuran
+                    </label>
+                    <select class="form-control"
+                        ng-options="item as item.Ukuran for item in DatasStock.Ukuran track by item.Ukuran"
+                        ng-model="SelectedUkuran" ng-change="ShowStock()"></select>
+                        &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="exampleInputEmail1">
+                        Warna
+                    </label>
+                    <select class="form-control"
+                        ng-options="item as item.Warna for item in DatasStock.Warna track by item.Warna"
+                        ng-model="SelectedWarna" ng-change="ShowStock()"></select>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div ng-init="Init()">
+    <div ng-show="Tampilstock" ng-hide="Hidestock"  class="row">
+        <div class="alert alert-success">
+            <div class="col-lg-12">
+                <!-- Advanced Tables -->
+                <div class="panel panel-default">
+                    <div class="panel-body text-align-center">
+                            <h5>Detail</h5>
+                        <div class="row">
+                                
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <p>Kode</p>
+                                    <p>Ukuran</p>
+                                    <p>Warna</p>
+                                    <p>Stock</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <p>{{DataTampil.Kode}}</p>
+                                    <p>{{DataTampil.Ukuran}}</p>
+                                    <p>{{DataTampil.Warna}}</p>
+                                    <p>{{DataTampil.Stock}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End Advanced Tables -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="TambahUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Tambah User</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <label>Nama Pengguna</label>
+                    <div class="form-group">
+                        <input class="form-control" placeholder="Nama" ng-model="DataInsert.Nama">
+                    </div>
+                    <label>Username Pengguna</label>
+                    <div class="form-group">
+                        <input class="form-control" placeholder="Username Pengguna" ng-model="DataInsert.Username">
+                    </div>
+                    <label>Password</label>
+                    <div class="form-group">
+                        <input class="form-control" type="password" placeholder="Password Pengguna"
+                            ng-model="DataInsert.Password">
+                    </div>
+                    <label>Level Akses</label>
+                    <div class="form-group">
+                        <select class="form-control"
+                            ng-options="item as item.Akses for item in Level track by item.Akses"
+                            ng-model="SelectedLevel"></select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="InsertPegawai()" data-dismiss="modal">Save
+                    changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="UpdateUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Update Pegawai</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <label>Nama Pengguna</label>
+                    <div class="form-group">
+                        <input class="form-control" placeholder="Nama" ng-model="DataInsert.Nama">
+                    </div>
+                    <label>Username</label>
+                    <div class="form-group">
+                        <input class="form-control" placeholder="Username" ng-model="DataInsert.Username">
+                    </div>
+                    <label>Level Akses</label>
+                    <div class="form-group">
+                        <select class="form-control"
+                            ng-options="item as item.Akses for item in Level track by item.Akses"
+                            ng-model="SelectedLevel"></select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="UpdateDataPegawai()" data-dismiss="modal">Save
+                    changes</button>
+            </div>
+        </div>
+    </div>
+</div>
