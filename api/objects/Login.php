@@ -53,7 +53,7 @@ class Login{
     }
 
     //Logout 
-    function Log()
+    public function Log()
     {
         session_start();
         session_unset();

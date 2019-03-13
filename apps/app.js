@@ -26,6 +26,10 @@ app.config(function($routeProvider) {  
         templateUrl: "apps/Views/Transaksi.html",
         controller: "TransaksiController"
     })
+    .when("/Logout", {
+        templateUrl: "apps/Views/main.html",
+        controller: "LogoutController"
+    })
     .otherwise({ redirectTo: '/Main' })
 
 })

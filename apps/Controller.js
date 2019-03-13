@@ -17,10 +17,27 @@ angular.module("Ctrl", [])
                 })
         }
     })
+    .controller("LogoutController", function ($scope, $http, SessionService) {
+        $scope.Init = function () {
+            //Auth
+            var Urlauth = "api/datas/auth.php";
+            $http({
+                method: "get",
+                url: Urlauth,
+            })
+                .then(function (response) {
+                    if (response.data.Session == false) {
+                        window.location.href = 'login.html';
+                    }
+                }, function (error) {
+                    alert(error.message);
+                })
+        }
+    })
 
 
     .controller("LogoutController", function ($scope, $http) {
-        var Urlauth = "api/datas/logout.php";
+        var Urlauth = "api/datas/read/Logout.php";
         $http({
             method: "get",
             url: Urlauth,
@@ -258,6 +275,10 @@ angular.module("Ctrl", [])
                             url: UrlBingkai
                         })
                             .then(function (response) {
+                                angular.forEach(response.data.Bingkai, function(value, key){
+                                    var a=value.Ukuran + " - " + value.Warna;
+                                    value.ItemBingkai = a;
+                                })
                                 $scope.DatasBingkai = response.data.Bingkai;
                             })
                     }
